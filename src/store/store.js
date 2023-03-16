@@ -1,4 +1,4 @@
-import {createStore, applyMiddleware} from "redux";
+import {createStore, applyMiddleware, compose} from "redux";
 import {persistStore, persistReducer} from "redux-persist";
 import storage from 'redux-persist/lib/storage';
 import logger from 'redux-logger';
@@ -24,7 +24,9 @@ sagaMiddleware
 
 
 //If redux devtool exist on crome use this compose..
-const composeEnhancer = (process.env.NODE_ENV !== 'production' && window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__);
+//const composeEnhancer = (process.env.NODE_ENV !== 'production' && window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__);
+const composeEnhancer = (process.env.NODE_ENV !== 'production' && window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+
 
 //const composedEnhancer = compose(applyMiddleware(...middleWares));
 const composedEnhancer = composeEnhancer(applyMiddleware(...middleWares));
