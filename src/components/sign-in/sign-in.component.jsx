@@ -4,28 +4,25 @@ import './sign-in.styles.scss';
 import Button, {Button_Type_Classes} from "../button/button.component";
 import {
     auth,
-    createUserDocumentFromAuth, signInAuthUserWithEmailAndPassword,
-    signInWithGooglePopup,
-    signInWithGoogleRedirect
+    createUserDocumentFromAuth
 } from "../../utils/firebase/firebase.util";
 import {getRedirectResult} from "firebase/auth";
+import {useDispatch} from "react-redux";
+import {emailSignInStart, googleSignInStartPop, googleSignInStartredi} from "../../store/user/user.action";
 
 const defaultFormFields = {
     email: '',
     password:'',
 };
 const SignIn = () => {
+    const dispatch = useDispatch();
     const [formFields, setFormFields] = useState(defaultFormFields);
     const {email, password} = formFields;
-
-   // const {setCurrentUser} = useContext(UserContext);
 
     useEffect(() => {
         async function logWithRedirect() {
             const response = await getRedirectResult(auth);
             if (response) {
-                //const userDocRef = await createUserDocumentFromAuth(response.user);
-                //setCurrentUser(response.user);
                 await createUserDocumentFromAuth(response.user);
             }
         }
@@ -38,14 +35,8 @@ const SignIn = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-
-
         try{
-            await signInAuthUserWithEmailAndPassword(email, password);
-            // const {user} = await signInAuthUserWithEmailAndPassword(email, password);
-            //console.log(response);
-            //setCurrentUser(user);
+            dispatch(emailSignInStart(email,password));
             resetFormFields();
         }catch (error){
             if (error.code === "auth/user-not-found"){
@@ -60,10 +51,11 @@ const SignIn = () => {
     };
 
     const signInWithGoogle = async () => {
-        await signInWithGooglePopup();
-        //const userDocRef = await createUserDocumentFromAuth(user);
-        //setCurrentUser(user);
+        dispatch(googleSignInStartPop());
+    };
 
+    const signInWithGoogleRedirect = async () => {
+        dispatch(googleSignInStartredi());
     };
 
     const handleChange = (event) => {
